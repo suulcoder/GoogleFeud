@@ -66,9 +66,23 @@ Gameloop:
 	LDR r0,=lowInterface
 	bl printf
 
-	LDR r0,=numberFormat
-	LDR r1,=number
+	LDR r4,=control
+	LDR r4,[r4]
+	CMP r4,#0
+	LDREQ r1,=number
+	CMP r4,#0
+	LDRNE r1,=answer
+	CMP r4,#0
+	LDREQ r0,=numberFormat
+	CMP r4,#0
+	LDRNE r0,=answerFormat
 	bl scanf
+
+	CMP r4,#0
+	@IF different Call subroutine check_answer with r1 as the question, if the aswer is correct it will store in number interface the answer. And it will return the points that the user got. 
+	@Then call generate_question, with r1 with the direcction of control that has to be 0, that will set all in the initialInterface
+	
+	@if equal call subroutine generate_question that will have in r1 the direcction of control, and in r2 the direcction of the catagorie
 
 	LDR r1,=Culture @Load memory directions with all questions of culture
 	@Load question 3 of Culture
@@ -86,6 +100,11 @@ Gameloop:
 .data
 .align 2
 
+@These memory location will be helpful to have a control in the interface
+@it will be a 0 when we need that the interface show the categories, and a 1 
+@when we need that it shows an answer of the given category, using the generate_question subroutines
+control: .byte 0
+
 @interface
 tittle: .asciz "   _____                   _        ______             _ \n  / ____|                 | |      |  ____|           | |\n | |  __  ___   ___   __ _| | ___  | |__ ___ _   _  __| |\n | | |_ |/ _ \  / _ \  / _` | |/ _ \  |  __/ _  \ | | |/ _` |\n | |__| | (_) | (_) | (_| | |  __/ | | |  __/ |_| | (_| |\n   \_____| \___/  \___/  \__, |_|\___|  |_|   \___| \__,_| \__,_|\n                      __/ |                              \n                     |___/                               \n%s%s"
 numbers162: .asciz "\n\n\t\t%s\t\t\t\t%s\n\n\t\t%s"
@@ -94,7 +113,7 @@ numbers495: .asciz "\n\n\t\t%s\t\t\t\t%s\n\n\t\t%s"
 number10: .asciz  "\t\t\t\t10\n\n\n"
 lowInterface: .asciz "\n\tRound:%d\t\tGuesses:%d\tScore:%d\t\t\n"
 
-@These asciz will replace %s in the initial interface
+@These asciz will be replaced %s in the initial interface
 one: .asciz "1"
 two: .asciz "2"
 three: .asciz "3"
@@ -107,6 +126,9 @@ nine: .asciz "9"
 ten: .asciz "10"
 initialInterface: .asciz "\n\n\t\t\tCHOOSE A CATEGORY"
 categoies: .asciz "\n\n1.Culture\t2.People\t3.Names\t\t4.Questions\n"
+
+@These asciz will be replaced when a question, on the interface
+questioninterface: .asciz "\n\n\t\tHOW DOES GOOGLE AUTOCOMPLETE THIS QUERY?\n\t\t\t"
 
 @These will be helpful to change with subroutine generate_question
 interface: .word initialInterface
@@ -124,13 +146,13 @@ Aeight: .word eight
 Anine: .word nine
 Aten: .word ten
 
-@Load the number in memory
-numberFormat:
-	.asciz "Choose a Category: %d"
+@When a number is asked from the user
+numberFormat: .asciz "Choose a Category: %d"
+number:	.word 0
 
-number:
-	.word 0
-
+@When an answer in a string format is asked form the user
+answerFormat: .asciz "Answer: %s"
+answer: .asciz ""
 
 @Here we store all the data on the memory. Each one has a tag, with this format
 @Letter that identifies the category + Question/Answer + Number of the question/answer + (a number that identifies the priority of the answer)
@@ -297,4 +319,3 @@ Culture: .word CultureQuestion1,CultureQuestion2,CultureQuestion3
 People: .word PeopleQuestion1,PeopleQuestion2,PeopleQuestion3
 Names: .word NamesQuestion1,NamesQuestion2,NamesQuestion3
 Questions: .word Question1,Question2,Question3
-
