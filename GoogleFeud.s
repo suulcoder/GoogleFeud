@@ -20,10 +20,25 @@ main:
 	MOV r10,#0
 
 ciclo:
+
 	@Guess Counter
-	MOV r9,#3
-	@Round Score
-	MOV r11,#0 
+	MOV r9,#3 
+
+	ADD r8,#1
+	MOV r1,r8
+	MOV r2,r9
+	MOV r3,r10
+	LDR r0,=tittle
+	bl printf
+
+	LDR r0,=numberFormat
+	LDR r1,=number
+	bl scanf
+
+	LDR r0,=numberFormat
+	LDR r1,=number
+	LDR r1,[r1]
+	bl printf
 
 	LDR r1,=Culture @Load memory directions with all questions of culture
 	@Load question 3 of Culture
@@ -33,6 +48,8 @@ ciclo:
 	bl printf
 	@facebook expected
 
+
+
 	MOV r0,#0
 	MOV r3,#0
 	ldmfd sp!, {lr}
@@ -40,6 +57,17 @@ ciclo:
 
 .data
 .align 2
+
+@interface
+tittle: .asciz "   _____                   _        ______             _ \n  / ____|                 | |      |  ____|           | |\n | |  __  ___   ___   __ _| | ___  | |__ ___ _   _  __| |\n | | |_ |/ _ \  / _ \  / _` | |/ _ \  |  __/ _  \ | | |/ _` |\n | |__| | (_) | (_) | (_| | |  __/ | | |  __/ |_| | (_| |\n   \_____| \___/  \___/  \__, |_|\___|  |_|   \___| \__,_| \__,_|\n                      __/ |                              \n                     |___/                               \n\n\n\t\t\tCHOOSE A CATEGORY\n\n1.Culture\t2.People\t3.Names\t\t4.Questions\n\n\n\t\t1\t\t\t\t6\n\n\t\t2\t\t\t\t7\n\n\t\t3\t\t\t\t8\n\n\t\t4\t\t\t\t9\n\n\t\t5\t\t\t\t10\n\n\n\n\tRound:%d\t\tGuesses:%d\tScore:%d\t\t\n"
+
+@Load the number in memory
+numberFormat:
+	.asciz "%d"
+
+number:
+	.word 0
+
 
 @Here we store all the data on the memory. Each one has a tag, with this format
 @Letter that identifies the category + Question/Answer + Number of the question/answer + (a number that identifies the priority of the answer)
@@ -122,7 +150,6 @@ PAnswer39: .asciz "6"
 PAnswer30: .asciz "5"
 PeopleQuestion3: .word PQuestion3,PAnswer31,PAnswer32,PAnswer33,PAnswer34,PAnswer35,PAnswer36,PAnswer37,PAnswer38,PAnswer39,PAnswer30 
 
-
 NQuestion1: .asciz "brian"
 NAnswer11: .asciz "ortega"
 NAnswer12: .asciz "mulroney"
@@ -200,6 +227,8 @@ Answer38: .asciz "background check"
 Answer39: .asciz "stretch and sweep"
 Answer30: .asciz "tittle search"
 Question3: .word Questions3,Answer31,Answer32,Answer33,Answer34,Answer35,Answer36,Answer37,Answer38,Answer39,Answer30 
+
+@Here we store an array with memory directions. Each question has one
 
 Culture: .word CultureQuestion1,CultureQuestion2,CultureQuestion3
 People: .word PeopleQuestion1,PeopleQuestion2,PeopleQuestion3
