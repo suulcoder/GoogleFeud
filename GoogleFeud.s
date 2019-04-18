@@ -19,26 +19,56 @@ main:
 	@Score
 	MOV r10,#0
 
-ciclo:
+Gameloop:
 
 	@Guess Counter
 	MOV r9,#3 
 
+	@Print interface
 	ADD r8,#1
+	LDR r1,=interface
+	LDR r1,[r1]
+	LDR r2,=questionOrCategories
+	LDR r2,[r2]
+	LDR r0,=tittle
+	bl printf
+	LDR r1,=Aone
+	LDR r1,[r1]
+	LDR r2,=Asix
+	LDR r2,[r2]
+	LDR r3,=Atwo
+	LDR r3,[r3]
+	LDR r0,=numbers162
+	bl printf
+	LDR r1,=Aseven
+	LDR r1,[r1]
+	LDR r2,=Athree
+	LDR r2,[r2]
+	LDR r3,=Aeight
+	LDR r3,[r3]
+	LDR r0,=numbers738
+	bl printf
+	LDR r1,=Afour
+	LDR r1,[r1]
+	LDR r2,=Anine
+	LDR r2,[r2]
+	LDR r3,=Afive
+	LDR r3,[r3]
+	LDR r0,=numbers495
+	bl printf
+	LDR r1,=Aten
+	LDR r1,[r1]
+	LDR r0,=number10
+	bl printf
 	MOV r1,r8
 	MOV r2,r9
 	MOV r3,r10
-	LDR r0,=tittle
+	LDR r0,=lowInterface
 	bl printf
 
 	LDR r0,=numberFormat
 	LDR r1,=number
 	bl scanf
-
-	LDR r0,=numberFormat
-	LDR r1,=number
-	LDR r1,[r1]
-	bl printf
 
 	LDR r1,=Culture @Load memory directions with all questions of culture
 	@Load question 3 of Culture
@@ -47,8 +77,6 @@ ciclo:
 	LDR r0,[r1,#8]
 	bl printf
 	@facebook expected
-
-
 
 	MOV r0,#0
 	MOV r3,#0
@@ -59,11 +87,46 @@ ciclo:
 .align 2
 
 @interface
-tittle: .asciz "   _____                   _        ______             _ \n  / ____|                 | |      |  ____|           | |\n | |  __  ___   ___   __ _| | ___  | |__ ___ _   _  __| |\n | | |_ |/ _ \  / _ \  / _` | |/ _ \  |  __/ _  \ | | |/ _` |\n | |__| | (_) | (_) | (_| | |  __/ | | |  __/ |_| | (_| |\n   \_____| \___/  \___/  \__, |_|\___|  |_|   \___| \__,_| \__,_|\n                      __/ |                              \n                     |___/                               \n\n\n\t\t\tCHOOSE A CATEGORY\n\n1.Culture\t2.People\t3.Names\t\t4.Questions\n\n\n\t\t1\t\t\t\t6\n\n\t\t2\t\t\t\t7\n\n\t\t3\t\t\t\t8\n\n\t\t4\t\t\t\t9\n\n\t\t5\t\t\t\t10\n\n\n\n\tRound:%d\t\tGuesses:%d\tScore:%d\t\t\n"
+tittle: .asciz "   _____                   _        ______             _ \n  / ____|                 | |      |  ____|           | |\n | |  __  ___   ___   __ _| | ___  | |__ ___ _   _  __| |\n | | |_ |/ _ \  / _ \  / _` | |/ _ \  |  __/ _  \ | | |/ _` |\n | |__| | (_) | (_) | (_| | |  __/ | | |  __/ |_| | (_| |\n   \_____| \___/  \___/  \__, |_|\___|  |_|   \___| \__,_| \__,_|\n                      __/ |                              \n                     |___/                               \n%s%s"
+numbers162: .asciz "\n\n\t\t%s\t\t\t\t%s\n\n\t\t%s"
+numbers738: .asciz "\t\t\t\t%s\n\n\t\t%s\t\t\t\t%s"
+numbers495: .asciz "\n\n\t\t%s\t\t\t\t%s\n\n\t\t%s"
+number10: .asciz  "\t\t\t\t10\n\n\n"
+lowInterface: .asciz "\n\tRound:%d\t\tGuesses:%d\tScore:%d\t\t\n"
+
+@These asciz will replace %s in the initial interface
+one: .asciz "1"
+two: .asciz "2"
+three: .asciz "3"
+four: .asciz "4"
+five: .asciz "5"
+six: .asciz "6"
+seven: .asciz "7"
+eight: .asciz "8"
+nine: .asciz "9"
+ten: .asciz "10"
+initialInterface: .asciz "\n\n\t\t\tCHOOSE A CATEGORY"
+categoies: .asciz "\n\n1.Culture\t2.People\t3.Names\t\t4.Questions\n"
+
+@These will be helpful to change with subroutine generate_question
+interface: .word initialInterface
+questionOrCategories: .word categoies
+
+@The following will be helpful to autofill the answers that were correct
+Aone: .word one
+Atwo: .word two
+Athree: .word three
+Afour: .word four
+Afive: .word five
+Asix: .word six
+Aseven: .word seven
+Aeight: .word eight
+Anine: .word nine
+Aten: .word ten
 
 @Load the number in memory
 numberFormat:
-	.asciz "%d"
+	.asciz "Choose a Category: %d"
 
 number:
 	.word 0
