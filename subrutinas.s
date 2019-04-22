@@ -20,7 +20,8 @@ checkIfAnswerIsCorrect:
 	beq fin
 	isAnAnswer:
 	mov r1, r0
-	mul r0, r0, #1000 
+	mov r2, #1000
+	mul r0, r0, r2 
 	b fin
 	fin:  
 	mov pc, lr
