@@ -78,7 +78,7 @@ Gameloop:
 	CMP r4,#0
 	LDRNE r0,=answerFormat
 	bl scanf
-
+	
 	CMP r4,#0
 	@IF different Call subroutine check_answer with r1 as the question, if the aswer is correct it will store in number interface the answer. And it will return the points that the user got. 
 	@Then call generate_question, with r1 with the direcction of control that has to be 0, that will set all in the initialInterface
@@ -99,6 +99,7 @@ Gameloop:
 	B asignQuestions
 	LDR r0,=errorFormat
 	BL printf
+	bl getchar
 	B Gameloop
 	
 
@@ -130,7 +131,9 @@ finally:
 	LDR r3,=AllInterface
 	LDR r1,=currentCategory
 	LDR r2,=AllInitialInterface
-	BL generate_question@Generate Question, and change interface
+	@Generate Question, and change interface
+	BL generate_question
+	bl getchar
 	B Gameloop
 
 Check:
@@ -140,12 +143,14 @@ Check:
 	LDR r1, =answer 
 	LDR r1, [r1]
 	@the memory of the question 
-	MOV r2, r5
+	LDR r2, =questionOrCategories
+	LDR r2, [r2]
 	BL checkIfAnswerIsCorrect
 	CMP r9, #0
 	MOVEQ r4, #0
 	LDR r5,=control
 	STR r4,[r5,#0]
+	bl getchar
 	B Gameloop
 
 	MOV r0,#0
