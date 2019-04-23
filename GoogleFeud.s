@@ -125,7 +125,13 @@ finally:
 	B Gameloop
 
 Check:
-	
+	@Counter for checkIfAnswerIsCorrect
+	MOV r0, #10 
+	@The answer of the user 
+	LDR r1, =answer 
+	LDR r1, [r1]
+	@the memory of the question 
+	MOV r2, r5
 	BL checkIfAnswerIsCorrect
 	CMP r9, #0
 	MOVEQ r4, #0
