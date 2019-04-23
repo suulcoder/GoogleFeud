@@ -66,6 +66,7 @@ Gameloop:
 	LDR r0,=lowInterface
 	bl printf
 
+	@Ask for user answer 0 for ask a categorie and 1 for a free answer
 	LDR r4,=control
 	LDR r4,[r4]
 	CMP r4,#0
@@ -81,16 +82,24 @@ Gameloop:
 	CMP r4,#0
 	@IF different Call subroutine check_answer with r1 as the question, if the aswer is correct it will store in number interface the answer. And it will return the points that the user got. 
 	@Then call generate_question, with r1 with the direcction of control that has to be 0, that will set all in the initialInterface
-	
 	@if equal call subroutine generate_question that will have in r1 the direcction of control, and in r2 the direcction of the catagorie
+	BNE Check
+	MOV r4,#1
+	STR r4,=control
+	MOV r2,r4
+	LDR r3,=AllInterface
+	LDR r0,=AllInitialInterface
+	BL generate_question
+	B Gameloop
 
-	LDR r1,=Culture @Load memory directions with all questions of culture
-	@Load question 3 of Culture
-	LDR r1,[r1,#8] 
-	@Load answer 2
-	LDR r0,[r1,#8]
-	bl printf
-	@facebook expected
+Check:
+	
+	BL checkIfAnswerIsCorrect
+	CMP r9, #0
+	MOVEQ r4, #0
+	STR r4,=control
+	B Gameloop
+
 
 	MOV r0,#0
 	MOV r3,#0
@@ -145,6 +154,9 @@ Aseven: .word seven
 Aeight: .word eight
 Anine: .word nine
 Aten: .word ten
+
+AllInterface: .word Aone,Atwo,Athree,Afour,Afive,Asix,Aseven,Aeight,Anine,Aten,interface,questionOrCategories
+AllInitialInterface: .word one,two,three,four,five,six,seven,eight,nine,ten,questioninterface,Culture,People,Names,Questions
 
 @When a number is asked from the user
 numberFormat: .asciz "Choose a Category: %d"
