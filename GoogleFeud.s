@@ -84,6 +84,7 @@ Gameloop:
 	@Then call generate_question, with r1 with the direcction of control that has to be 0, that will set all in the initialInterface
 	@if equal call subroutine generate_question that will have in r1 the direcction of control, and in r2 the direcction of the catagorie
 	BNE Check
+
 	MOV r4,#1
 	STR r4,=control
 	MOV r2,r4
@@ -134,14 +135,14 @@ eight: .asciz "8"
 nine: .asciz "9"
 ten: .asciz "10"
 initialInterface: .asciz "\n\n\t\t\tCHOOSE A CATEGORY"
-categoies: .asciz "\n\n1.Culture\t2.People\t3.Names\t\t4.Questions\n"
+categories: .asciz "\n\n1.Culture\t2.People\t3.Names\t\t4.Questions\n"
 
 @These asciz will be replaced when a question, on the interface
 questioninterface: .asciz "\n\n\t\tHOW DOES GOOGLE AUTOCOMPLETE THIS QUERY?\n\t\t\t"
 
 @These will be helpful to change with subroutine generate_question
 interface: .word initialInterface
-questionOrCategories: .word categoies
+questionOrCategories: .word categories
 
 @The following will be helpful to autofill the answers that were correct
 Aone: .word one
@@ -155,8 +156,8 @@ Aeight: .word eight
 Anine: .word nine
 Aten: .word ten
 
-AllInterface: .word Aone,Atwo,Athree,Afour,Afive,Asix,Aseven,Aeight,Anine,Aten,interface,questionOrCategories
-AllInitialInterface: .word one,two,three,four,five,six,seven,eight,nine,ten,questioninterface,Culture,People,Names,Questions
+AllInterface: .word Aone,Atwo,Athree,Afour,Afive,Asix,Aseven,Aeight,Anine,Aten,interface,questionOrCategories,currentCategory
+AllInitialInterface: .word one,two,three,four,five,six,seven,eight,nine,ten,questioninterface,categories,Culture,People,Names,Questions
 
 @When a number is asked from the user
 numberFormat: .asciz "Choose a Category: %d"
@@ -331,3 +332,4 @@ Culture: .word CultureQuestion1,CultureQuestion2,CultureQuestion3
 People: .word PeopleQuestion1,PeopleQuestion2,PeopleQuestion3
 Names: .word NamesQuestion1,NamesQuestion2,NamesQuestion3
 Questions: .word Question1,Question2,Question3
+currentCategory: .word Culture

@@ -1,6 +1,6 @@
 .text
 .align 2
-.global checkIfAnswerIsCorrect
+.global checkIfAnswerIsCorrect,generate_question
 @Parameters:
 @R0: counter
 @R1: User guess
@@ -23,4 +23,8 @@ checkIfAnswerIsCorrect:
 	mul r0, r0, #1000 
 	b fin
 	fin:  
+	mov pc, lr
+
+generate_question:
+	
 	mov pc, lr
