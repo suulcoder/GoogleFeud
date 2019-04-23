@@ -46,7 +46,7 @@ generate_question:
 			LDR r0,[r3,#4]
 			pop {r3}
 			LDR r3,[r2,#4]
-			STR r0,r3
+			STR r0,[r3,#0]
 			push {r3}
 			SUB r0,#1
 			CMP r0,#0
@@ -55,7 +55,24 @@ generate_question:
 			B end
 
 	questionInterface:
-		@Generate question
+		pop {r0}
+		MOV r0,#3
+		bl srand
+		pop {r1}
+		LDR r1,[r3,#44]
+		pop {r3}
+		LDR r3,[r2,#54]
+		STR r1,[r3,#0]
+		push {r3}
+		push {r1}
+		MOV r5,#4
+		MUL r0,r0,r5
+		LDR r1,[r3,#48]
+		pop {r3}
+		LDR r3,[r1,r0]
+		STR r1,[r3,#0]
+		push {r3}
+		push {r0}
 
 	end:
 		mov pc, lr

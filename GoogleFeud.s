@@ -84,18 +84,23 @@ Gameloop:
 	@Then call generate_question, with r1 with the direcction of control that has to be 0, that will set all in the initialInterface
 	@if equal call subroutine generate_question that will have in r1 the direcction of control, and in r2 the direcction of the catagorie
 	BNE Check
+	LDR r7,=compareOne
 	@Check all options
-	CMP r1,"1"
+	CMP r1,r7
 	B asignCulture
-	CMP r1,"2"
+	LDR r7,=compareTwo
+	CMP r1,r7
 	B asignPeople
-	CMP r1,"3"
+	LDR r7,=compareThree
+	CMP r1,r7
 	B asignNames
-	CMP r1,"4"
+	LDR r7,=comparetFour
+	CMP r1,r7
 	B asignQuestions
 	LDR r0,=errorFormat
 	BL printf
 	B Gameloop
+	
 
 asignCulture:
 	LDREQ r5,=Culture
@@ -115,10 +120,12 @@ asignQuestions:
 
 finally:
 	@We change currentCategory memory.
-	STR r5,=currentCategory
+	LDR r4,=currentCategory
+	STR r5,[r4,#0]
 	@set contol in 1
 	MOV r4,#1
-	STR r4,=control
+	LDR r5,=control
+	STR r4,[r5,#0]
 	MOV r0,r4
 	LDR r3,=AllInterface
 	LDR r1,=currentCategory
@@ -137,7 +144,8 @@ Check:
 	BL checkIfAnswerIsCorrect
 	CMP r9, #0
 	MOVEQ r4, #0
-	STR r4,=control
+	LDR r5,=control
+	STR r4,[r5,#0]
 	B Gameloop
 
 	MOV r0,#0
@@ -147,6 +155,11 @@ Check:
 
 .data
 .align 2
+
+compareOne: .asciz "1"
+compareTwo: .asciz "2"
+compareThree: .asciz "3"
+comparetFour: .asciz "4"
 
 errorFormat: .asciz "Select a valid category"
 
