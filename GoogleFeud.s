@@ -84,12 +84,43 @@ Gameloop:
 	@Then call generate_question, with r1 with the direcction of control that has to be 0, that will set all in the initialInterface
 	@if equal call subroutine generate_question that will have in r1 the direcction of control, and in r2 the direcction of the catagorie
 	BNE Check
+	@Check all options
+	CMP r1,"1"
+	B asignCulture
+	CMP r1,"2"
+	B asignPeople
+	CMP r1,"3"
+	B asignNames
+	CMP r1,"4"
+	B asignQuestions
+	LDR r0,=errorFormat
+	BL printf
+	B Gameloop
 
+asignCulture:
+	LDREQ r5,=Culture
+	B finally
+
+asignPeople:
+	LDREQ r5,=People
+	B finally
+
+asignNames:
+	LDREQ r5,=Names
+	B finally
+
+asignQuestions:
+	LDREQ r5,=Questions
+	B finally
+
+finally:
+	STR r5,=currentCategory
 	MOV r4,#1
 	STR r4,=control
-	MOV r2,r4
+	MOV r0,r4
 	LDR r3,=AllInterface
-	LDR r0,=AllInitialInterface
+	LDR r1,=currentCategory
+	LDR r2,=AllInitialInterface
 	BL generate_question
 	B Gameloop
 
@@ -101,7 +132,6 @@ Check:
 	STR r4,=control
 	B Gameloop
 
-
 	MOV r0,#0
 	MOV r3,#0
 	ldmfd sp!, {lr}
@@ -109,6 +139,8 @@ Check:
 
 .data
 .align 2
+
+errorFormat: .asciz "Select a valid category"
 
 @These memory location will be helpful to have a control in the interface
 @it will be a 0 when we need that the interface show the categories, and a 1 
@@ -156,8 +188,8 @@ Aeight: .word eight
 Anine: .word nine
 Aten: .word ten
 
-AllInterface: .word Aone,Atwo,Athree,Afour,Afive,Asix,Aseven,Aeight,Anine,Aten,interface,questionOrCategories,currentCategory
-AllInitialInterface: .word one,two,three,four,five,six,seven,eight,nine,ten,questioninterface,categories,Culture,People,Names,Questions
+AllInterface: .word Aone,Atwo,Athree,Afour,Afive,Asix,Aseven,Aeight,Anine,Aten,interface,questionOrCategories
+AllInitialInterface: .word one,two,three,four,five,six,seven,eight,nine,ten,questioninterface,categories
 
 @When a number is asked from the user
 numberFormat: .asciz "Choose a Category: %d"
