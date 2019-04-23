@@ -114,14 +114,16 @@ asignQuestions:
 	B finally
 
 finally:
+	@We change currentCategory memory.
 	STR r5,=currentCategory
+	@set contol in 1
 	MOV r4,#1
 	STR r4,=control
 	MOV r0,r4
 	LDR r3,=AllInterface
 	LDR r1,=currentCategory
 	LDR r2,=AllInitialInterface
-	BL generate_question
+	BL generate_question@Generate Question, and change interface
 	B Gameloop
 
 Check:
@@ -195,7 +197,7 @@ Anine: .word nine
 Aten: .word ten
 
 AllInterface: .word Aone,Atwo,Athree,Afour,Afive,Asix,Aseven,Aeight,Anine,Aten,interface,questionOrCategories
-AllInitialInterface: .word one,two,three,four,five,six,seven,eight,nine,ten,questioninterface,categories
+AllInitialInterface: .word one,two,three,four,five,six,seven,eight,nine,ten,initialInterface,categories,questioninterface
 
 @When a number is asked from the user
 numberFormat: .asciz "Choose a Category: %d"
