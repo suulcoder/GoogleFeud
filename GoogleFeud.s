@@ -27,7 +27,6 @@ Gameloop:
 	MOV r9,#3 
 
 	@Print interface
-	ADD r8,#1
 	LDR r1,=interface
 	LDR r1,[r1]
 	LDR r2,=questionOrCategories
@@ -125,27 +124,50 @@ finally:
 	@We change currentCategory memory.
 	LDR r4,=currentCategory
 	STR r5,[r4]
-	LDR r4,=currentCategory
-	LDR r4,[r4]
-	LDR r0,[r4]
-	LDR r0,[r0]
-	bl printf
 	@set contol in 1
 	MOV r4,#1
 	@Change interface
 	LDR r5,=interface
 	LDR r6,=questioninterface
 	STR r6,[r5]
-	LDR r5,=questionOrCategories
+	LDR r7,=questionOrCategories
 	@Parameters for subroutine
-	LDR r1,=currentCategory
-	LDR r1,[r1]
-	LDR r2,=mask
-	LDRB r2,[r2]
+	LDR r1,=mask
+	LDRB r0,[r1]
 	@Generate Question, and change interface
 	BL generate_question
+	MOV r6,r0
+	LDR r7,=currentCategory
+	LDR r7,[r7]
+	CMP r6,#1
+	BEQ getFirst
+	CMP r6,#2
+	BEQ getSecond
+	CMP r7,#3
+	BEQ getThird
+	LDR r0,=numberFormat
 	bl printf
-	STR r0,[r5]
+	bl getchar
+	B Gameloop
+
+getFirst:
+	LDR	r7,[r7]
+	LDR r0,[r7]
+	bl printf
+	bl getchar
+	B Gameloop
+
+getSecond:
+	LDR	r7,[r7,#4]
+	LDR r0,[r7]
+	bl printf
+	bl getchar
+	B Gameloop
+
+getThird:
+	LDR	r7,[r7,#8]
+	LDR r0,[r7]
+	bl printf
 	bl getchar
 	B Gameloop
 
@@ -162,6 +184,7 @@ Check:
 	CMP r9, #0
 	MOVEQ r4, #0
 	bl getchar
+	ADD r8,#1
 	B Gameloop
 
 	MOV r0,#0

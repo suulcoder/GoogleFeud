@@ -27,29 +27,15 @@ checkIfAnswerIsCorrect:
 	mov pc, lr
 
 @Parametrs
-@R1 current Category, gives the direction of the Category that is played.
-@R2 mask from memory
+@R0 mask from memory where mask is the number of options in binary format
 generate_question:
 	push {lr}
-	bl aleatorios
-	MOV r3,r0
-	AND r3,r2
-	CMP r3,#0
-	BEQ LoadFirst
-	CMP r3,#1
-	BEQ LoadSecond
-	CMP r4,#2
-	BEQ LoadThird
-	CMP r3,#3
-	BEQ LoadFirst
-	LoadFirst: 
-		LDR r0,[r1]
-		B End
-	LoadSecond:
-		LDR r0,[r1,#4]
-		B End
-	LoadThird:
-		LDR r0,[r1,#8]
-		B End
-	End:
-		pop {pc}
+	loop:
+		MOV r1,r0
+		bl aleatorios
+		MOV r3,r0
+		AND r3,r1
+		CMP r3,#0
+		BEQ loop
+	MOV r0,r3	
+	pop {pc}
