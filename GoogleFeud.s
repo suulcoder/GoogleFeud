@@ -14,20 +14,16 @@
 main:
 	stmfd sp!,{lr}
 
-	@Interface control
-	MOV r4,#0
-	@Round Counter
-	MOV r8,#0
-	@Score
-	MOV r10,#0
+	MOV r4,#0							@Interface control
+	MOV r8,#0							@Round Counter
+	MOV r10,#0							@Score
+	MOV r6,#0							@Question control
 
 Gameloop:
 
-	@Guess Counter
-	MOV r9,#3 
+	MOV r9,#3							@Guess Counter
 
-	@Print interface
-	LDR r1,=interface
+	LDR r1,=interface					@Print interface
 	LDR r1,[r1]
 	LDR r2,=questionOrCategories
 	LDR r2,[r2]
@@ -72,8 +68,7 @@ Gameloop:
 	CMP r4,#1
 	LDREQ r0,=Aformat
 	bl printf
-	@Ask for user answer 0 for ask a categorie and 1 for a free answer
-	CMP r4,#0
+	CMP r4,#0								@Ask for user answer 0 for ask a categorie and 1 for a free answer
 	LDREQ r1,=number
 	CMP r4,#1
 	LDREQ r1,=answer
@@ -84,14 +79,10 @@ Gameloop:
 	bl scanf
 
 	CMP r4,#0
-	@IF different Call subroutine check_answer with r1 as the question, if the aswer is correct it will store in number interface the answer. And it will return the points that the user got. 
-	@Then call generate_question, with r1 with the direcction of control that has to be 0, that will set all in the initialInterface
-	@if equal call subroutine generate_question that will have in r1 the direcction of control, and in r2 the direcction of the catagorie
-	BNE Check
+	BNE Check								@IF control is in 1
 	LDR r7,=number
 	LDR r7,[r7]
-	@Check all options
-	CMP r7,#1
+	CMP r7,#1								@Check all options and change memory location
 	BEQ asignCulture
 	CMP r7,#2
 	BEQ asignPeople
@@ -104,81 +95,52 @@ Gameloop:
 	bl getchar
 	B Gameloop
 	
-asignCulture:
+asignCulture:							@If user choose 1
 	LDR r5,=Culture
 	B finally
 
-asignPeople:
+asignPeople:							@If user choose 2
 	LDR r5,=People
 	B finally
 
-asignNames:
+asignNames:								@If user choose 3
 	LDR r5,=Names
 	B finally
 
-asignQuestions:
+asignQuestions:							@If user choose 4
 	LDR r5,=Questions
 	B finally
 
 finally:
-	@We change currentCategory memory.
-	LDR r4,=currentCategory
+	LDR r4,=currentCategory										@We change currentCategory memory.
 	STR r5,[r4]
-	@set contol in 1
-	MOV r4,#1
-	@Change interface
-	LDR r5,=interface
-	LDR r6,=questioninterface
-	STR r6,[r5]
-	LDR r7,=questionOrCategories
-	@Parameters for subroutine
-	LDR r1,=mask
-	LDRB r0,[r1]
-	@Generate Question, and change interface
-	BL generate_question
+	MOV r4,#1													@set contol in 1	
+	LDR r5,=interface											@Change interface
+	LDR r3,=questioninterface
+	STR r3,[r5]
+	LDR r1,=mask												@Parameters for subroutine
+	MOV r0,r11
+	BL generate_question										@Generate Question, and change interface
 	MOV r6,r0
-	LDR r7,=currentCategory
-	LDR r7,[r7]
-	CMP r6,#1
-	BEQ getFirst
-	CMP r6,#2
-	BEQ getSecond
-	CMP r7,#3
-	BEQ getThird
+	MOV r1,r6
 	LDR r0,=numberFormat
 	bl printf
-	bl getchar
-	B Gameloop
-
-getFirst:
-	LDR	r7,[r7]
-	LDR r0,[r7]
-	bl printf
-	bl getchar
-	B Gameloop
-
-getSecond:
-	LDR	r7,[r7,#4]
-	LDR r0,[r7]
-	bl printf
-	bl getchar
-	B Gameloop
-
-getThird:
-	LDR	r7,[r7,#8]
-	LDR r0,[r7]
-	bl printf
+	LDR r7,=currentCategory
+	LDR r5,[r7]
+	MOV r3,#4
+	MUL r11,r6,r3
+	LDR	r5,[r5,r11]
+	LDR r5,[r5]
+	LDR r3,=questionOrCategories
+	STR r5,[r3]
 	bl getchar
 	B Gameloop
 
 Check:
-	@Counter for checkIfAnswerIsCorrect
-	MOV r0, #10 
-	@The answer of the user 
-	LDR r1, =answer 
+	MOV r0, #10												@Counter for checkIfAnswerIsCorrect 
+	LDR r1, =answer											@The answer of the user 
 	LDR r1, [r1]
-	@the memory of the question 
-	LDR r2, =questionOrCategories
+	LDR r2, =questionOrCategories							@the memory of the question 
 	LDR r2, [r2]
 	BL checkIfAnswerIsCorrect
 	CMP r9, #0

@@ -27,15 +27,10 @@ checkIfAnswerIsCorrect:
 	mov pc, lr
 
 @Parametrs
-@R0 mask from memory where mask is the number of options in binary format
+@R0 answer control
 generate_question:
 	push {lr}
-	loop:
-		MOV r1,r0
-		bl aleatorios
-		MOV r3,r0
-		AND r3,r1
-		CMP r3,#0
-		BEQ loop
-	MOV r0,r3	
+	ADD r0,#1
+	CMP r3,#3
+	MOVEQ r0,#0
 	pop {pc}
