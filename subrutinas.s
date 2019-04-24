@@ -1,6 +1,6 @@
 .text
 .align 2
-.global checkIfAnswerIsCorrect,generate_question
+.global checkIfAnswerIsCorrect, generate_question
 @Parameters:
 @R0: counter
 @R1: User guess
@@ -27,52 +27,29 @@ checkIfAnswerIsCorrect:
 	mov pc, lr
 
 @Parametrs
-@R0 control, gives the directions of a boolean it is false or 0 when the initial interface needs to be desplayed and 1 or true when the question interface is needed
-@R1 current Category, gives the direction of the Category that is played. 
-@R2 All initial interface, gives the direction of the initial interface
-@R3 interface, gives the direction that are changed
+@R1 current Category, gives the direction of the Category that is played.
+@R2 mask from memory
 generate_question:
-	
-	CMP r0, #0
-	BEQ InitialInterface
-	CMP r0, #1
-	BEQ questionInterface
-
-	@if initial interface is asked
-	InitialInterface:
-		pop {r0,r1}
-		MOV r1,#12
-		loop:		
-			LDR r0,[r3,#4]
-			pop {r3}
-			LDR r3,[r2,#4]
-			STR r0,[r3,#0]
-			push {r3}
-			SUB r0,#1
-			CMP r0,#0
-			BNE loop
-			push {r0,r1}
-			B end
-
-	questionInterface:
-		pop {r0}
-		MOV r0,#3
-		bl srand
-		pop {r1}
-		LDR r1,[r3,#44]
-		pop {r3}
-		LDR r3,[r2,#54]
-		STR r1,[r3,#0]
-		push {r3}
-		push {r1}
-		MOV r5,#4
-		MUL r0,r0,r5
-		LDR r1,[r3,#48]
-		pop {r3}
-		LDR r3,[r1,r0]
-		STR r1,[r3,#0]
-		push {r3}
-		push {r0}
-
-	end:
-		mov pc, lr
+	push {lr}
+	bl aleatorios
+	MOV r3,r0
+	AND r3,r2
+	CMP r3,#0
+	BEQ LoadFirst
+	CMP r3,#1
+	BEQ LoadSecond
+	CMP r4,#2
+	BEQ LoadThird
+	CMP r3,#3
+	BEQ LoadFirst
+	LoadFirst: 
+		LDR r0,[r1]
+		B End
+	LoadSecond:
+		LDR r0,[r1,#4]
+		B End
+	LoadThird:
+		LDR r0,[r1,#8]
+		B End
+	End:
+		pop {pc}

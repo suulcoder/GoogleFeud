@@ -14,6 +14,8 @@
 main:
 	stmfd sp!,{lr}
 
+	@Interface control
+	MOV r4,#0
 	@Round Counter
 	MOV r8,#0
 	@Score
@@ -66,73 +68,84 @@ Gameloop:
 	LDR r0,=lowInterface
 	bl printf
 
+	CMP r4,#0
+	LDREQ r0,=Nformat
+	CMP r4,#1
+	LDREQ r0,=Aformat
+	bl printf
 	@Ask for user answer 0 for ask a categorie and 1 for a free answer
-	LDR r4,=control
-	LDR r4,[r4]
 	CMP r4,#0
 	LDREQ r1,=number
-	CMP r4,#0
-	LDRNE r1,=answer
+	CMP r4,#1
+	LDREQ r1,=answer
+	CMP r4,#1
+	LDREQ r0,=answerFormat
 	CMP r4,#0
 	LDREQ r0,=numberFormat
-	CMP r4,#0
-	LDRNE r0,=answerFormat
 	bl scanf
-	
+
 	CMP r4,#0
 	@IF different Call subroutine check_answer with r1 as the question, if the aswer is correct it will store in number interface the answer. And it will return the points that the user got. 
 	@Then call generate_question, with r1 with the direcction of control that has to be 0, that will set all in the initialInterface
 	@if equal call subroutine generate_question that will have in r1 the direcction of control, and in r2 the direcction of the catagorie
 	BNE Check
-	LDR r7,=compareOne
+	LDR r7,=number
+	LDR r7,[r7]
 	@Check all options
-	CMP r1,r7
-	B asignCulture
-	LDR r7,=compareTwo
-	CMP r1,r7
-	B asignPeople
-	LDR r7,=compareThree
-	CMP r1,r7
-	B asignNames
-	LDR r7,=comparetFour
-	CMP r1,r7
-	B asignQuestions
+	CMP r7,#1
+	BEQ asignCulture
+	CMP r7,#2
+	BEQ asignPeople
+	CMP r7,#3
+	BEQ asignNames
+	CMP r7,#4
+	BEQ asignQuestions
 	LDR r0,=errorFormat
 	BL printf
 	bl getchar
 	B Gameloop
 	
-
 asignCulture:
-	LDREQ r5,=Culture
+	LDR r5,=Culture
 	B finally
 
 asignPeople:
-	LDREQ r5,=People
+	LDR r5,=People
 	B finally
 
 asignNames:
-	LDREQ r5,=Names
+	LDR r5,=Names
 	B finally
 
 asignQuestions:
-	LDREQ r5,=Questions
+	LDR r5,=Questions
 	B finally
 
 finally:
 	@We change currentCategory memory.
 	LDR r4,=currentCategory
-	STR r5,[r4,#0]
+	STR r5,[r4]
+	LDR r4,=currentCategory
+	LDR r4,[r4]
+	LDR r0,[r4]
+	LDR r0,[r0]
+	bl printf
 	@set contol in 1
 	MOV r4,#1
-	LDR r5,=control
-	STR r4,[r5,#0]
-	MOV r0,r4
-	LDR r3,=AllInterface
+	@Change interface
+	LDR r5,=interface
+	LDR r6,=questioninterface
+	STR r6,[r5]
+	LDR r5,=questionOrCategories
+	@Parameters for subroutine
 	LDR r1,=currentCategory
-	LDR r2,=AllInitialInterface
+	LDR r1,[r1]
+	LDR r2,=mask
+	LDRB r2,[r2]
 	@Generate Question, and change interface
 	BL generate_question
+	bl printf
+	STR r0,[r5]
 	bl getchar
 	B Gameloop
 
@@ -148,8 +161,6 @@ Check:
 	BL checkIfAnswerIsCorrect
 	CMP r9, #0
 	MOVEQ r4, #0
-	LDR r5,=control
-	STR r4,[r5,#0]
 	bl getchar
 	B Gameloop
 
@@ -161,25 +172,16 @@ Check:
 .data
 .align 2
 
-compareOne: .asciz "1"
-compareTwo: .asciz "2"
-compareThree: .asciz "3"
-comparetFour: .asciz "4"
-
-errorFormat: .asciz "Select a valid category"
-
-@These memory location will be helpful to have a control in the interface
-@it will be a 0 when we need that the interface show the categories, and a 1 
-@when we need that it shows an answer of the given category, using the generate_question subroutines
-control: .byte 0
+errorFormat: .asciz "Select a valid category\n"
+mask: .byte 0x3 
 
 @interface
 tittle: .asciz "   _____                   _        ______             _ \n  / ____|                 | |      |  ____|           | |\n | |  __  ___   ___   __ _| | ___  | |__ ___ _   _  __| |\n | | |_ |/ _ \  / _ \  / _` | |/ _ \  |  __/ _  \ | | |/ _` |\n | |__| | (_) | (_) | (_| | |  __/ | | |  __/ |_| | (_| |\n   \_____| \___/  \___/  \__, |_|\___|  |_|   \___| \__,_| \__,_|\n                      __/ |                              \n                     |___/                               \n%s%s"
 numbers162: .asciz "\n\n\t\t%s\t\t\t\t%s\n\n\t\t%s"
 numbers738: .asciz "\t\t\t\t%s\n\n\t\t%s\t\t\t\t%s"
 numbers495: .asciz "\n\n\t\t%s\t\t\t\t%s\n\n\t\t%s"
-number10: .asciz  "\t\t\t\t10\n\n\n"
-lowInterface: .asciz "\n\tRound:%d\t\tGuesses:%d\tScore:%d\t\t\n"
+number10: .asciz  "\t\t\t\t10\n"
+lowInterface: .asciz "\tRound:%d\t\tGuesses:%d\tScore:%d\t\t\n"
 
 @These asciz will be replaced %s in the initial interface
 one: .asciz "1"
@@ -192,11 +194,11 @@ seven: .asciz "7"
 eight: .asciz "8"
 nine: .asciz "9"
 ten: .asciz "10"
-initialInterface: .asciz "\n\n\t\t\tCHOOSE A CATEGORY"
-categories: .asciz "\n\n1.Culture\t2.People\t3.Names\t\t4.Questions\n"
+initialInterface: .asciz "\n\t\t\tCHOOSE A CATEGORY\n"
+categories: .asciz "1.Culture\t2.People\t3.Names\t\t4.Questions\n"
 
 @These asciz will be replaced when a question, on the interface
-questioninterface: .asciz "\n\n\t\tHOW DOES GOOGLE AUTOCOMPLETE THIS QUERY?\n\t\t\t"
+questioninterface: .asciz "\tHOW DOES GOOGLE AUTOCOMPLETE THIS QUERY?\n\t\t\t"
 
 @These will be helpful to change with subroutine generate_question
 interface: .word initialInterface
@@ -214,15 +216,14 @@ Aeight: .word eight
 Anine: .word nine
 Aten: .word ten
 
-AllInterface: .word Aone,Atwo,Athree,Afour,Afive,Asix,Aseven,Aeight,Anine,Aten,interface,questionOrCategories
-AllInitialInterface: .word one,two,three,four,five,six,seven,eight,nine,ten,initialInterface,categories,questioninterface
-
 @When a number is asked from the user
-numberFormat: .asciz "Choose a Category: %d"
+numberFormat: .asciz "%d"
+Nformat: .asciz "Choose a category: "
 number:	.word 0
 
 @When an answer in a string format is asked form the user
-answerFormat: .asciz "Answer: %s"
+answerFormat: .asciz "%s"
+Aformat: .asciz "Write your answer: "
 answer: .asciz ""
 
 @Here we store all the data on the memory. Each one has a tag, with this format
