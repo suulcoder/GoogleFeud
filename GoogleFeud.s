@@ -143,12 +143,55 @@ Check:
 	LDR r2, =questionOrCategories							@the memory of the question 
 	LDR r2, [r2]
 	BL checkIfAnswerIsCorrect
+	
 	CMP r9, #0
-	MOVEQ r4, #0
+	BEQ iniciar
 	bl getchar
-	ADD r8,#1
 	B Gameloop
 
+iniciar:
+	ADD r8,#1
+	MOV r4, #0
+	LDR r5,=one						@Change user interface to get initial interface
+	LDR r6,=Aone
+	STR r5,[r6]
+	LDR r5,=two
+	LDR r6,=Atwo
+	STR r5,[r6]
+	LDR r5,=three
+	LDR r6,=Athree
+	STR r5,[r6]
+	LDR r5,=four
+	LDR r6,=Afour
+	STR r5,[r6]
+	LDR r5,=five
+	LDR r6,=Afive
+	STR r5,[r6]
+	LDR r5,=six
+	LDR r6,=Asix
+	STR r5,[r6]
+	LDR r5,=seven
+	LDR r6,=Aseven
+	STR r5,[r6]
+	LDR r5,=eight
+	LDR r6,=Aeight
+	STR r5,[r6]
+	LDR r5,=nine
+	LDR r6,=Anine
+	STR r5,[r6]
+	LDR r5,=ten
+	LDR r6,=Aten
+	STR r5,[r6]
+	LDR r5,=initialInterface
+	LDR r6,=interface
+	STR r5,[r6]
+	LDR r5,=categories
+	LDR r6,=questionOrCategories
+	STR r5,[r6]
+
+	bl getchar
+	B Gameloop
+	
 	MOV r0,#0
 	MOV r3,#0
 	ldmfd sp!, {lr}
@@ -182,11 +225,8 @@ ten: .asciz "10"
 initialInterface: .asciz "\n\t\t\tCHOOSE A CATEGORY\n"
 categories: .asciz "1.Culture\t2.People\t3.Names\t\t4.Questions\n"
 
-@These asciz will be replaced when a question, on the interface
-questioninterface: .asciz "\tHOW DOES GOOGLE AUTOCOMPLETE THIS QUERY?\n\t\t\t"
-
-@These will be helpful to change with subroutine generate_question
-interface: .word initialInterface
+questioninterface: .asciz "\tHOW DOES GOOGLE AUTOCOMPLETE THIS QUERY?\n\t\t\t"				@These asciz will be replaced when a question, on the interface
+interface: .word initialInterface															@These will be helpful to change with subroutine generate_question
 questionOrCategories: .word categories
 
 @The following will be helpful to autofill the answers that were correct
