@@ -137,12 +137,20 @@ finally:
 	B Gameloop
 
 Check:
-	MOV r0, #10												@Counter for checkIfAnswerIsCorrect 
+	MOV r9,#3
+	MOV r0, #0												@Counter for checkIfAnswerIsCorrect 
 	LDR r1, =answer											@The answer of the user 
 	LDR r1, [r1]
-	LDR r2, =questionOrCategories							@the memory of the question 
-	LDR r2, [r2]
+	LDR r2, =currentCategory							@the memory of the question 
+	ldr r2, [r2]
+	CMP r6, #0
+	LDREQ r2, [r2]
+	CMP r6, #1
+	LDREQ r2,[r2, #4]
+	CMP r6, #2
+	LDREQ r2,[r2, #8]
 	BL checkIfAnswerIsCorrect
+	add r10, r0 
 	
 	CMP r9, #0
 	BEQ iniciar
