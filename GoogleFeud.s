@@ -127,11 +127,11 @@ finally:
 	bl printf
 	LDR r7,=currentCategory
 	LDR r5,[r7]
-	MOV r3,#4
+	MOV r3,#4													@This wil be helpful to se the offset
 	MUL r11,r6,r3
 	LDR	r5,[r5,r11]
 	LDR r5,[r5]
-	LDR r3,=questionOrCategories
+	LDR r3,=questionOrCategories								@Set question
 	STR r5,[r3]
 	bl getchar
 	B Gameloop
