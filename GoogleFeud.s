@@ -137,32 +137,126 @@ finally:
 	B Gameloop
 
 Check:
-	MOV r9,#3
 	LDR r3, =currentCategory
 	ldr r3, [r3]
 	CMP r6, #0
-	LDREQ r3, [r3]
+	LDREQ r7, [r3]
 	CMP r6, #1
-	LDREQ r3,[r3, #4]
+	LDREQ r7,[r3, #4]
 	CMP r6, #2
-	LDREQ r3,[r3, #8]
+	LDREQ r7,[r3, #8]
 	LDR r2, =answer
-	ldr r2, [r2]
-	mov r1, #10
-	check_cicle:
-		LDR r3, [r3, #4]
-		mov r0, #0
-		BL checkIfAnswerIsCorrect
-		cmp r0, #0
-		subeq r1, #1
-		cmp r1, #0
-		beq end_check
-		bne check_cicle
-		cmp r0, #1
-		mov r0, r1
-	end_check:
-		add r10, r0 
-	
+	mov r5,#1
+	MOV r1,#4
+
+	MUL r11,r5,r1										@Check all answers
+	LDR r3, [r7, r11]
+	mov r0, #0
+	BL checkIfAnswerIsCorrect
+	MOV r1,r0
+	cmp r1, #1
+	BEQ end_check
+	add r5, #1
+	MUL r11,r5,r1
+	LDR r3, [r7, r11]
+	mov r0, #0
+	BL checkIfAnswerIsCorrect
+	MOV r1,r0
+	cmp r1, #1
+	BEQ end_check
+	add r5, #1
+	MUL r11,r5,r1
+	LDR r3, [r7, r11]
+	mov r0, #0
+	BL checkIfAnswerIsCorrect
+	MOV r1,r0
+	cmp r1, #1
+	BEQ end_check
+	add r5, #1
+	MUL r11,r5,r1
+	LDR r3, [r7, r11]
+	mov r0, #0
+	BL checkIfAnswerIsCorrect
+	MOV r1,r0
+	cmp r1, #1
+	BEQ end_check
+	add r5, #1
+	MUL r11,r5,r1
+	LDR r3, [r7, r11]
+	mov r0, #0
+	BL checkIfAnswerIsCorrect
+	MOV r1,r0
+	cmp r1, #1
+	BEQ end_check
+	add r5, #1
+	MUL r11,r5,r1
+	LDR r3, [r7, r11]
+	mov r0, #0
+	BL checkIfAnswerIsCorrect
+	MOV r1,r0
+	cmp r1, #1
+	BEQ end_check
+	add r5, #1
+	MUL r11,r5,r1
+	LDR r3, [r7, r11]
+	mov r0, #0
+	BL checkIfAnswerIsCorrect
+	MOV r1,r0
+	cmp r1, #1
+	BEQ end_check
+	add r5, #1
+	MUL r11,r5,r1
+	LDR r3, [r7, r11]
+	mov r0, #0
+	BL checkIfAnswerIsCorrect
+	MOV r1,r0
+	cmp r1, #1
+	BEQ end_check
+	add r5, #1
+	MUL r11,r5,r1
+	LDR r3, [r7, r11]
+	mov r0, #0
+	BL checkIfAnswerIsCorrect
+	MOV r1,r0
+	cmp r1, #1
+	BEQ end_check
+	add r5, #1
+	MUL r11,r5,r1
+	LDR r3, [r7, r11]
+	mov r0, #0
+	BL checkIfAnswerIsCorrect
+	MOV r1,r0
+	cmp r1, #1
+	BEQ end_check
+	add r5, #1
+	SUB r9,#1
+	B Gameloop
+
+	end_check:								@Update user interface
+		SUB r5,#1
+		CMP r5,#1
+		LDREQ r5,=Aone
+		CMP r5,#2
+		LDREQ r5,=Atwo
+		CMP r5,#3
+		LDREQ r5,=Athree
+		CMP r5,#4
+		LDREQ r5,=Afour
+		CMP r5,#5
+		LDREQ r5,=Afive
+		CMP r5,#6
+		LDREQ r5,=Asix
+		CMP r5,#7
+		LDREQ r5,=Aseven
+		CMP r5,#8
+		LDREQ r5,=Aeight
+		CMP r5,#9
+		LDREQ r5,=Anine
+		CMP r5,#10
+		LDREQ r5,=Aten
+		STR r3,[r5]
+		ADD r10,r11
+
 	CMP r9, #0
 	BEQ iniciar
 	bl getchar
