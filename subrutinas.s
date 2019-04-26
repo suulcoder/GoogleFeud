@@ -23,14 +23,15 @@ checkIfAnswerIsCorrect:
 		ldrb r5, [r2], #1
 		ldrb r6, [r3], #1
 		cmp r5, r6
+		movne r7, #0
 		bne fin
 		beq lookingGood
 	lookingGood:
 		cmp r5, r6
 		subeq r4, #1
+		mov r7, #1
 		cmp r4, #0
 		bne ciclo
-		addeq r7, #1
 	fin:
 		mov r0, r7
 		pop {r4-r12,pc}
