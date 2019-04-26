@@ -138,19 +138,30 @@ finally:
 
 Check:
 	MOV r9,#3
-	MOV r0, #0												@Counter for checkIfAnswerIsCorrect 
-	LDR r1, =answer											@The answer of the user 
-	LDR r1, [r1]
-	LDR r2, =currentCategory							@the memory of the question 
-	ldr r2, [r2]
+	LDR r3, =currentCategory
+	ldr r3, [r3]
 	CMP r6, #0
-	LDREQ r2, [r2]
+	LDREQ r3, [r3]
 	CMP r6, #1
-	LDREQ r2,[r2, #4]
+	LDREQ r3,[r3, #4]
 	CMP r6, #2
-	LDREQ r2,[r2, #8]
-	BL checkIfAnswerIsCorrect
-	add r10, r0 
+	LDREQ r3,[r3, #8]
+	LDR r2, =answer
+	ldr r2, [r2]
+	mov r1, #10
+	check_cicle:
+		LDR r3, [r3, #4]
+		mov r0, #0
+		BL checkIfAnswerIsCorrect
+		cmp r0, #0
+		subeq r1, #1
+		cmp r1, #0
+		beq end_check
+		bne check_cicle
+		cmp r0, #1
+		mov r0, r1
+	end_check:
+		add r10, r0 
 	
 	CMP r9, #0
 	BEQ iniciar

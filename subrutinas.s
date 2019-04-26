@@ -11,33 +11,33 @@
 .global checkIfAnswerIsCorrect, generate_question
 @Made by michele Benvenuto
 @Parameters:
-@R0: counter
-@R1: User guess
-@R2: memory of question to use 
-@R3: will contain the current correct answet to compare
+@R2: user input
+@R3: will contain the correct answer
 checkIfAnswerIsCorrect:
-	push {lr}
+	push {r4-r12,lr}
+	mov r4, #100
+	mov r7, #0
+	mov r5 ,#0
+	mov r6, #0
 	ciclo:
-	add r2, r2, #4
-	ldr r3, [r2]
-	eor r3,r1
-	CMP r3, #0
-	bne notTheAnswer
-	beq isAnAnswer
-	notTheAnswer:
-	ADD r0, r0, #1
-	cmp r0, #10
-	blt ciclo
-	beq fin
-	isAnAnswer:
-	mov r1, r0
-	mov r0, #10
-	sub r0, r1
-	add r1, #1
-	b fin
-	fin:  
-	pop {pc}
-	mov pc, lr
+		ldrb r5, [r2], #1
+		ldrb r6, [r3], #1
+		cmp r5, r6
+		bne fin
+		beq lookingGood
+	lookingGood:
+		cmp r5, r6
+		subeq r4, #1
+		cmp r4, #0
+		bne ciclo
+		addeq r7, #1
+	fin:
+		mov r0, r7
+		pop {r4-r12,pc}
+sumar:
+	add r4,r0,r1
+	mov r0,r4
+        mov pc, lr
 
 @Made by Saul Contreras
 @Parametrs 
