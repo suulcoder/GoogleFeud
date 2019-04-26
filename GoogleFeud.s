@@ -362,7 +362,6 @@ number:	.word 0
 answerFormat: .asciz "%s"
 Aformat: .asciz "Write your answer: "
 answer: .asciz " "
-answer: .asciz " "
 
 @Here we store all the data on the memory. Each one has a tag, with this format
 @Letter that identifies the category + Question/Answer + Number of the question/answer + (a number that identifies the priority of the answer)
