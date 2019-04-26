@@ -18,10 +18,9 @@ main:
 	MOV r8,#0							@Round Counter
 	MOV r10,#0							@Score
 	MOV r6,#0							@Question control
+	MOV r9,#3							@Guess Counter
 
 Gameloop:
-
-	MOV r9,#3							@Guess Counter
 
 	LDR r1,=interface					@Print interface
 	LDR r1,[r1]
@@ -77,7 +76,7 @@ Gameloop:
 	CMP r4,#0
 	LDREQ r0,=numberFormat
 	bl scanf
-
+	
 	CMP r4,#0
 	BNE Check								@IF control is in 1
 	LDR r7,=number
@@ -147,82 +146,81 @@ Check:
 	LDREQ r7,[r3, #8]
 	LDR r2, =answer
 	mov r5,#1
-	MOV r1,#4
 
-	MUL r11,r5,r1										@Check all answers
-	LDR r3, [r7, r11]
+	MOV	r11,#10									@Check all answers
+	LDR r12, [r7, #4]
 	mov r0, #0
 	BL checkIfAnswerIsCorrect
 	MOV r1,r0
 	cmp r1, #1
 	BEQ end_check
 	add r5, #1
-	MUL r11,r5,r1
-	LDR r3, [r7, r11]
+	MOV r11, #20
+	LDR r12, [r7, #8]
 	mov r0, #0
 	BL checkIfAnswerIsCorrect
 	MOV r1,r0
 	cmp r1, #1
 	BEQ end_check
 	add r5, #1
-	MUL r11,r5,r1
-	LDR r3, [r7, r11]
+	MOV r11, #30
+	LDR r12, [r7, #12]
 	mov r0, #0
 	BL checkIfAnswerIsCorrect
 	MOV r1,r0
 	cmp r1, #1
 	BEQ end_check
 	add r5, #1
-	MUL r11,r5,r1
-	LDR r3, [r7, r11]
+	MOV r11, #40
+	LDR r12, [r7, #16]
 	mov r0, #0
 	BL checkIfAnswerIsCorrect
 	MOV r1,r0
 	cmp r1, #1
 	BEQ end_check
 	add r5, #1
-	MUL r11,r5,r1
-	LDR r3, [r7, r11]
+	MOV r11, #50
+	LDR r12, [r7, #20]
 	mov r0, #0
 	BL checkIfAnswerIsCorrect
 	MOV r1,r0
 	cmp r1, #1
 	BEQ end_check
 	add r5, #1
-	MUL r11,r5,r1
-	LDR r3, [r7, r11]
+	MOV r11, #60
+	LDR r12, [r7, #24]
 	mov r0, #0
 	BL checkIfAnswerIsCorrect
 	MOV r1,r0
 	cmp r1, #1
 	BEQ end_check
 	add r5, #1
-	MUL r11,r5,r1
-	LDR r3, [r7, r11]
+	MOV r11, #70
+	LDR r12, [r7, #28]
 	mov r0, #0
 	BL checkIfAnswerIsCorrect
 	MOV r1,r0
 	cmp r1, #1
 	BEQ end_check
 	add r5, #1
-	MUL r11,r5,r1
-	LDR r3, [r7, r11]
+	MOV r11, #80
+	LDR r12, [r7, #32]
 	mov r0, #0
 	BL checkIfAnswerIsCorrect
 	MOV r1,r0
 	cmp r1, #1
 	BEQ end_check
 	add r5, #1
-	MUL r11,r5,r1
-	LDR r3, [r7, r11]
+	MOV r11, #90
+	LDR r12, [r7, #36]
 	mov r0, #0
 	BL checkIfAnswerIsCorrect
 	MOV r1,r0
 	cmp r1, #1
 	BEQ end_check
 	add r5, #1
-	MUL r11,r5,r1
-	LDR r3, [r7, r11]
+	MOV r11, #100
+	LDR r12, [r7, #40]
 	mov r0, #0
 	BL checkIfAnswerIsCorrect
 	MOV r1,r0
@@ -230,10 +228,12 @@ Check:
 	BEQ end_check
 	add r5, #1
 	SUB r9,#1
+	CMP r9, #0
+	BEQ iniciar
+	bl getchar
 	B Gameloop
 
 	end_check:								@Update user interface
-		SUB r5,#1
 		CMP r5,#1
 		LDREQ r5,=Aone
 		CMP r5,#2
@@ -254,52 +254,51 @@ Check:
 		LDREQ r5,=Anine
 		CMP r5,#10
 		LDREQ r5,=Aten
+		MOV r3,r12
 		STR r3,[r5]
 		ADD r10,r11
-
-	CMP r9, #0
-	BEQ iniciar
-	bl getchar
-	B Gameloop
+		bl getchar
+		B Gameloop
 
 iniciar:
+	MOV r9,#3
 	ADD r8,#1
 	MOV r4, #0
 	LDR r5,=one						@Change user interface to get initial interface
-	LDR r6,=Aone
+	LDR r3,=Aone
 	STR r5,[r6]
 	LDR r5,=two
-	LDR r6,=Atwo
+	LDR r3,=Atwo
 	STR r5,[r6]
 	LDR r5,=three
-	LDR r6,=Athree
+	LDR r3,=Athree
 	STR r5,[r6]
 	LDR r5,=four
-	LDR r6,=Afour
+	LDR r3,=Afour
 	STR r5,[r6]
 	LDR r5,=five
-	LDR r6,=Afive
+	LDR r3,=Afive
 	STR r5,[r6]
 	LDR r5,=six
-	LDR r6,=Asix
+	LDR r3,=Asix
 	STR r5,[r6]
 	LDR r5,=seven
-	LDR r6,=Aseven
+	LDR r3,=Aseven
 	STR r5,[r6]
 	LDR r5,=eight
-	LDR r6,=Aeight
+	LDR r3,=Aeight
 	STR r5,[r6]
 	LDR r5,=nine
-	LDR r6,=Anine
+	LDR r3,=Anine
 	STR r5,[r6]
 	LDR r5,=ten
-	LDR r6,=Aten
+	LDR r3,=Aten
 	STR r5,[r6]
 	LDR r5,=initialInterface
-	LDR r6,=interface
+	LDR r3,=interface
 	STR r5,[r6]
 	LDR r5,=categories
-	LDR r6,=questionOrCategories
+	LDR r3,=questionOrCategories
 	STR r5,[r6]
 
 	bl getchar
@@ -362,7 +361,8 @@ number:	.word 0
 @When an answer in a string format is asked form the user
 answerFormat: .asciz "%s"
 Aformat: .asciz "Write your answer: "
-answer: .asciz ""
+answer: .asciz " "
+answer: .asciz " "
 
 @Here we store all the data on the memory. Each one has a tag, with this format
 @Letter that identifies the category + Question/Answer + Number of the question/answer + (a number that identifies the priority of the answer)
@@ -371,52 +371,52 @@ CQuestion1: .asciz "wrestling is"
 CAnswer11: .asciz "fake"
 CAnswer12: .asciz "real"
 CAnswer13: .asciz "forever"
-CAnswer14: .asciz "fake gif"
-CAnswer15: .asciz "real to me"
+CAnswer14: .asciz "FakeGif"
+CAnswer15: .asciz "RealToMe"
 CAnswer16: .asciz "life"
 CAnswer17: .asciz "wrestling"
 CAnswer18: .asciz "dead" 
-CAnswer19: .asciz "the hardest sport"
+CAnswer19: .asciz "TheHardestSport"
 CAnswer10: .asciz "anime"
 CultureQuestion1: .word CQuestion1,CAnswer11,CAnswer12,CAnswer13,CAnswer14,CAnswer15,CAnswer16,CAnswer17,CAnswer18,CAnswer19,CAnswer10 
 
 CQuestion2: .asciz "star trek is"
 CAnswer21: .asciz "fascist"
 CAnswer22: .asciz "better"
-CAnswer23: .asciz "a dystopia"
+CAnswer23: .asciz "aDystopia"
 CAnswer24: .asciz "dead"
 CAnswer25: .asciz "communist"
 CAnswer26: .asciz "real"
 CAnswer27: .asciz "bad"
 CAnswer28: .asciz "dead" 
-CAnswer29: .asciz "just space fantasy"
-CAnswer20: .asciz "data dead"
+CAnswer29: .asciz "justSpaceFantasy"
+CAnswer20: .asciz "DataDead"
 CultureQuestion2: .word CQuestion2,CAnswer21,CAnswer22,CAnswer23,CAnswer24,CAnswer25,CAnswer26,CAnswer27,CAnswer28,CAnswer29,CAnswer20 
 
-CQuestion3: .asciz "app for"
+CQuestion3: .asciz "AppFor"
 CAnswer31: .asciz "instagram"
 CAnswer32: .asciz "facebook"
 CAnswer33: .asciz "handyman"
 CAnswer34: .asciz "android"
 CAnswer35: .asciz "rent"
-CAnswer36: .asciz "making friends"
-CAnswer37: .asciz "instagram story"
+CAnswer36: .asciz "makingFriends"
+CAnswer37: .asciz "instagramStory"
 CAnswer38: .asciz "flashlight" 
 CAnswer39: .asciz "messenger"
 CAnswer30: .asciz "pictures"
 CultureQuestion3: .word CQuestion3,CAnswer31,CAnswer32,CAnswer33,CAnswer34,CAnswer35,CAnswer36,CAnswer37,CAnswer38,CAnswer39,CAnswer30 
 
 PQuestion1: .asciz "dad's"
-PAnswer11: .asciz "old number"
+PAnswer11: .asciz "oldNumber"
 PAnswer12: .asciz "army"
-PAnswer13: .asciz "root beer"
+PAnswer13: .asciz "rootBeer"
 PAnswer14: .asciz "plan"
 PAnswer15: .asciz "home"
 PAnswer16: .asciz "automotive"
 PAnswer17: .asciz "throphy"
-PAnswer18: .asciz "back academy" 
+PAnswer18: .asciz "backAcademy" 
 PAnswer19: .asciz "birthday"
-PAnswer10: .asciz "bullying lesson"
+PAnswer10: .asciz "bullyingLesson"
 PeopleQuestion1: .word PQuestion1,PAnswer11,PAnswer12,PAnswer13,PAnswer14,PAnswer15,PAnswer16,PAnswer17,PAnswer18,PAnswer19,PAnswer10 
 
 PQuestion2: .asciz "my best friends is a"
@@ -427,20 +427,20 @@ PAnswer24: .asciz "girl"
 PAnswer25: .asciz "marine"
 PAnswer26: .asciz "robot"
 PAnswer27: .asciz "dog"
-PAnswer28: .asciz "marine shirt" 
+PAnswer28: .asciz "marineShirt" 
 PAnswer29: .asciz "cat"
-PAnswer20: .asciz "plastic surgery monster"
+PAnswer20: .asciz "plasticSurgeryMonster"
 PeopleQuestion2: .word PQuestion2,PAnswer21,PAnswer22,PAnswer23,PAnswer24,PAnswer25,PAnswer26,PAnswer27,PAnswer28,PAnswer29,PAnswer20 
 
 PQuestion3: .asciz "my lucky number is"
-PAnswer31: .asciz "8 what does it mean"
+PAnswer31: .asciz "8WhatDoesItMean"
 PAnswer32: .asciz "454"
 PAnswer33: .asciz "13"
 PAnswer34: .asciz "4"
 PAnswer35: .asciz "7"
 PAnswer36: .asciz "3"
 PAnswer37: .asciz "1"
-PAnswer38: .asciz "7 what does it mean" 
+PAnswer38: .asciz "7WhatDoesItMean" 
 PAnswer39: .asciz "6"
 PAnswer30: .asciz "5"
 PeopleQuestion3: .word PQuestion3,PAnswer31,PAnswer32,PAnswer33,PAnswer34,PAnswer35,PAnswer36,PAnswer37,PAnswer38,PAnswer39,PAnswer30 
@@ -460,9 +460,9 @@ NamesQuestion1: .word NQuestion1,NAnswer11,NAnswer12,NAnswer13,NAnswer14,NAnswer
 
 NQuestion2: .asciz "richard"
 NAnswer21: .asciz "nixon"
-NAnswer22: .asciz "t fields"
+NAnswer22: .asciz "tFields"
 NAnswer23: .asciz "madden"
-NAnswer24: .asciz "d huffman"
+NAnswer24: .asciz "dHuffman"
 NAnswer25: .asciz "gere"
 NAnswer26: .asciz "ramirez"
 NAnswer27: .asciz "simmons"
@@ -476,7 +476,7 @@ NAnswer31: .asciz "penn"
 NAnswer32: .asciz "mcvay"
 NAnswer33: .asciz "hannity"
 NAnswer34: .asciz "connery"
-NAnswer35: .asciz "mcvay girlfriend"
+NAnswer35: .asciz "mcvayGirlfriend"
 NAnswer36: .asciz "paul"
 NAnswer37: .asciz "kingston"
 NAnswer38: .asciz "bean" 
@@ -486,27 +486,27 @@ NamesQuestion3: .word NQuestion3,NAnswer31,NAnswer32,NAnswer33,NAnswer34,NAnswer
 
 Questions1: .asciz "what body parts can you"
 Answer11: .asciz "sell"
-Answer12: .asciz "live without"
+Answer12: .asciz "liveWithout"
 Answer13: .asciz "eat"
 Answer14: .asciz "donate"
 Answer15: .asciz "pierce"
 Answer16: .asciz "crack"
-Answer17: .asciz "use in soccer"
-Answer18: .asciz "fill with bees" 
-Answer19: .asciz "donate and still live"
+Answer17: .asciz "useInSoccer"
+Answer18: .asciz "fillWithBees" 
+Answer19: .asciz "donateAndStillLive"
 Answer10: .asciz "sprain"
 Question1: .word Questions1,Answer11,Answer12,Answer13,Answer14,Answer15,Answer16,Answer17,Answer18,Answer19,Answer10 
 
 Questions2: .asciz "how do you make"
 Answer21: .asciz "slime"
-Answer22: .asciz "french toast"
+Answer22: .asciz "frenchToast"
 Answer23: .asciz "buttermilk"
 Answer24: .asciz "brown"
 Answer25: .asciz "caramel"
-Answer26: .asciz "almond milk"
+Answer26: .asciz "almondMilk"
 Answer27: .asciz "gravy"
 Answer28: .asciz "meatloaf" 
-Answer29: .asciz "whipped cream"
+Answer29: .asciz "whippedCream"
 Answer20: .asciz "chili"
 Question2: .word Questions2,Answer21,Answer22,Answer23,Answer24,Answer25,Answer26,Answer27,Answer28,Answer29,Answer20 
 
@@ -514,13 +514,13 @@ Questions3: .asciz "can i perform my own"
 Answer31: .asciz "wedding"
 Answer32: .asciz "marriage"
 Answer33: .asciz "nikah"
-Answer34: .asciz "home inspection"
+Answer34: .asciz "homeInspection"
 Answer35: .asciz "circumcision"
 Answer36: .asciz "liposuction"
-Answer37: .asciz "membran sweep"
-Answer38: .asciz "background check" 
-Answer39: .asciz "stretch and sweep"
-Answer30: .asciz "tittle search"
+Answer37: .asciz "membranSweep"
+Answer38: .asciz "backgroundCheck" 
+Answer39: .asciz "stretchAndSweep"
+Answer30: .asciz "tittleSearch"
 Question3: .word Questions3,Answer31,Answer32,Answer33,Answer34,Answer35,Answer36,Answer37,Answer38,Answer39,Answer30 
 
 @Here we store an array with memory directions. Each question has one
