@@ -34,11 +34,6 @@ checkIfAnswerIsCorrect:
 	fin:
 		mov r0, r7
 		pop {r4-r12,pc}
-sumar:
-	add r4,r0,r1
-	mov r0,r4
-        mov pc, lr
-
 @Made by Saul Contreras
 @Parametrs 
 @R0 answer control
